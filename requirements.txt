@@ -1,0 +1,18 @@
+pillow
+numpy
+opencv-python==4.13.0.90
+tqdm
+yapf
+gpustat
+calflops
+scipy
+pycocotools
+orjson
+peft==0.21.0
+tokenizers==0.23.2
+transformers==5.17.0
+deepspeed==0.19.7
+# flash-attn==2.8.3
+# flash_attn-2.8.3+cu12torch2.8cxx11abiFALSE-cp312-cp312-linux_x86_64.whl
+# causal_conv1d-1.7.0+cu12torch2.8cxx11abiTRUE-cp312-cp312-linux_x86_64.whl
+# flash-linear-attention

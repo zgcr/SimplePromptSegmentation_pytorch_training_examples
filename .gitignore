@@ -1,0 +1,17 @@
+.vscode
+__pycache__
+checkpoints
+log
+*__pycache__*
+*checkpoints*
+*log*
+*temp*
+*tmp*
+*.onnx
+*.pt
+*.log
+*.csv
+*.pyc
+*.whl
+.ipynb_checkpoints
+.gradio
