@@ -251,8 +251,10 @@ def preprocess_image(root_dataset_path, subset_name_list, save_dataset_path):
     # save the same image name into two different save subsets, each with a
     # partial json, which breaks the global uniqueness of image name.
     all_image_group_dict = collections.OrderedDict()
-    # image name -> the first source subset it appears in, used to keep the
-    # save subset naming scheme (f'{subset_name}_{idx}') stable
+    # image name -> the first source subset it appears in, used to decide which
+    # save subset this image belongs to. the save subset name is exactly the
+    # original subset name, so an image whose masks are spread over several
+    # source subsets is saved once, into the subset it first appears in.
     image_name_owner_subset_dict = collections.OrderedDict()
 
     for per_subset_name in tqdm(subset_name_list):
@@ -326,8 +328,9 @@ def preprocess_image(root_dataset_path, subset_name_list, save_dataset_path):
                 f'duplicated mask index in image group {per_image_name}: '
                 f'{[item[1] for item in per_group_items]}')
 
-    # bucket image names by their owner subset, then split each bucket into save
-    # subsets (10000 groups per save subset), keeping the original naming scheme
+    # bucket image names by their owner subset. one source subset is saved as
+    # one single save subset without any sharding, so the save subset keeps the
+    # original subset size and the original subset name.
     subset_to_image_name_list = collections.OrderedDict(
         (per_subset_name, []) for per_subset_name in subset_name_list)
     for per_image_name in all_image_group_dict:
@@ -337,32 +340,28 @@ def preprocess_image(root_dataset_path, subset_name_list, save_dataset_path):
     all_group_args_list = []
     for per_subset_name, per_group_key_list in subset_to_image_name_list.items(
     ):
-        per_num_save_subsets = (len(per_group_key_list) + 9999) // 10000
+        per_save_subset_name = per_subset_name
 
-        for per_save_subset_idx in range(per_num_save_subsets):
-            per_start_idx = per_save_subset_idx * 10000
-            per_end_idx = min((per_save_subset_idx + 1) * 10000,
-                              len(per_group_key_list))
-            per_save_subset_name = f'{per_subset_name}_{per_save_subset_idx}'
+        print(f'{per_save_subset_name}: '
+              f'{len(per_group_key_list)} image groups to save')
 
-            for per_group_idx in range(per_start_idx, per_end_idx):
-                per_image_name = per_group_key_list[per_group_idx]
-                per_group_items = all_image_group_dict[per_image_name]
+        for per_image_name in per_group_key_list:
+            per_group_items = all_image_group_dict[per_image_name]
 
-                per_ann_idx_list = [item[0] for item in per_group_items]
-                per_caption_path_list = [item[1] for item in per_group_items]
-                # all masks of one image share the same source image and json
-                per_image_src_path = per_group_items[0][2]
-                per_source_json_path = per_group_items[0][3]
+            per_ann_idx_list = [item[0] for item in per_group_items]
+            per_caption_path_list = [item[1] for item in per_group_items]
+            # all masks of one image share the same source image and json
+            per_image_src_path = per_group_items[0][2]
+            per_source_json_path = per_group_items[0][3]
 
-                all_group_args_list.append((
-                    per_image_name,
-                    per_ann_idx_list,
-                    per_caption_path_list,
-                    per_image_src_path,
-                    per_source_json_path,
-                    per_save_subset_name,
-                ))
+            all_group_args_list.append((
+                per_image_name,
+                per_ann_idx_list,
+                per_caption_path_list,
+                per_image_src_path,
+                per_source_json_path,
+                per_save_subset_name,
+            ))
 
     # sanity check: each image name must be saved exactly once, so that the
     # dataset class can safely use the image file name as a unique key

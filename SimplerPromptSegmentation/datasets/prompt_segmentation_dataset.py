@@ -35,11 +35,11 @@ class PromptSegmentationDataset(Dataset):
         #########################################################
         text_prompt_image_root_dir='',
         text_prompt_image_set_name=[
-            'sa1b_0_0',
+            'sa_000000',
         ],
         text_prompt_image_set_type='train',
         text_prompt_image_per_set_image_choose_max_num={
-            'sa1b_0_0': 1000000,
+            'sa_000000': 1000000,
         },
         text_prompt_per_image_mask_choose_max_num=32,
         text_prompt_per_image_sample_num=1,
@@ -942,11 +942,11 @@ if __name__ == '__main__':
         #########################################################
         text_prompt_image_root_dir=text_prompt_segmentation_dataset_path,
         text_prompt_image_set_name=[
-            'sa1b_0_0',
+            'sa_000000',
         ],
         text_prompt_image_set_type='train',
         text_prompt_image_per_set_image_choose_max_num={
-            'sa1b_0_0': 1000000,
+            'sa_000000': 1000000,
         },
         text_prompt_per_image_mask_choose_max_num=32,
         text_prompt_per_image_sample_num=1,
