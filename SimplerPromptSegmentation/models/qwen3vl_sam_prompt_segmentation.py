@@ -921,6 +921,7 @@ class QWEN3VLSAMPromptSegmentation(nn.Module):
                  max_prompt_num=1,
                  region_grid_size=3,
                  vlm_model_path=None,
+                 local_files_only=False,
                  tokenizer_vocab_size=None,
                  use_gradient_checkpoint=False):
         super(QWEN3VLSAMPromptSegmentation, self).__init__()
@@ -978,7 +979,8 @@ class QWEN3VLSAMPromptSegmentation(nn.Module):
         self.vlm = Qwen3VLForConditionalGeneration.from_pretrained(
             vlm_model_path,
             dtype=torch.bfloat16,
-            attn_implementation='flash_attention_2')
+            attn_implementation='flash_attention_2',
+            local_files_only=local_files_only)
 
         # Resize VLM token embeddings to match tokenizer vocab size.
         # The Qwen3VLSegTokenizer adds special tokens (<SEG>, <p>, </p>,

@@ -220,6 +220,7 @@ class Qwen3VLSegTokenizer:
 
     def __init__(self,
                  vlm_model_path,
+                 local_files_only=False,
                  special_tokens=[
                      SEG_TOKEN,
                      PSTART_TOKEN,
@@ -227,8 +228,11 @@ class Qwen3VLSegTokenizer:
                      REGION_TOKEN,
                  ],
                  num_region_tokens=DEFAULT_NUM_REGION_TOKENS):
-        self.processor = AutoProcessor.from_pretrained(vlm_model_path,
-                                                       trust_remote_code=True)
+        self.processor = AutoProcessor.from_pretrained(
+            vlm_model_path,
+            trust_remote_code=True,
+            local_files_only=local_files_only,
+        )
         self.tokenizer = self.processor.tokenizer
 
         num_added = self.tokenizer.add_tokens(special_tokens,
@@ -703,6 +707,7 @@ class Qwen35SegTokenizer:
 
     def __init__(self,
                  vlm_model_path,
+                 local_files_only=False,
                  special_tokens=[
                      SEG_TOKEN,
                      PSTART_TOKEN,
@@ -710,8 +715,11 @@ class Qwen35SegTokenizer:
                      REGION_TOKEN,
                  ],
                  num_region_tokens=DEFAULT_NUM_REGION_TOKENS):
-        self.processor = AutoProcessor.from_pretrained(vlm_model_path,
-                                                       trust_remote_code=True)
+        self.processor = AutoProcessor.from_pretrained(
+            vlm_model_path,
+            trust_remote_code=True,
+            local_files_only=local_files_only,
+        )
         self.tokenizer = self.processor.tokenizer
 
         num_added = self.tokenizer.add_tokens(special_tokens,
